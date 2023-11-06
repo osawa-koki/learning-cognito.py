@@ -32,3 +32,5 @@ jobs:
       run: poetry install --no-root
     - name: Pylint
       run: poetry run pylint --recursive true ./app/
+    - name: autopep8
+      run: poetry run autopep8 --in-place --recursive --aggressive --aggressive --exit-code ./app/
