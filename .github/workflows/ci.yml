@@ -29,6 +29,6 @@ jobs:
         curl -sSL https://install.python-poetry.org | python3 -
         echo "$HOME/.local/bin" >> $GITHUB_PATH
     - name: Install dependencies
-      run: poetry install
+      run: poetry install --no-root
     - name: Pylint
       run: poetry run pylint --recursive true ./app/
