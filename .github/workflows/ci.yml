@@ -1,0 +1,30 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - issues/*
+  pull_request:
+    branches:
+      - main
+      - develop
+      - issues/*
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        python-version: [3.11]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: poetry install
+    - name: Pylint
+      run: poetry run pylint --recursive true ./app/
