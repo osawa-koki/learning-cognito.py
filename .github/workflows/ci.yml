@@ -34,3 +34,5 @@ jobs:
       run: poetry run pylint --recursive true ./app/
     - name: autopep8
       run: poetry run autopep8 --in-place --recursive --aggressive --aggressive --exit-code ./app/
+    - name: isort
+      run: poetry run isort --check-only --recursive ./app/
