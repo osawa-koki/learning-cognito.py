@@ -5,6 +5,7 @@ import uvicorn
 
 app = FastAPI()
 
+
 @app.get("/")
 def read_root():
     """`Hello World`を返す。
@@ -13,6 +14,7 @@ def read_root():
         dict: `Hello World`を含む辞書データ。
     """
     return {"Hello": "World"}
+
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: str = None):
@@ -27,10 +29,12 @@ def read_item(item_id: int, q: str = None):
     """
     return {"item_id": item_id, "q": q}
 
+
 def main():
     """FastAPIのサーバーを起動する。
     """
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
 
 if __name__ == "__main__":
     main()
