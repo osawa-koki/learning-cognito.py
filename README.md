@@ -7,5 +7,5 @@
 DevContainerに入り、以下のコマンドを実行してください。
 
 ```shell
-poetry run python ./app/main.py
+poetry run uvicorn app.main:app [--reload]
 ```
