@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "learning-cognito-py"
+version = "0.1.0"
+description = "🍛🍛🍛 PythonでCognitoの認証フローを実装したサンプルです！"
+authors = ["osawa-koki <koki@osawa.dev>"]
+license = "Apache-2.0"
+readme = "README.md"
+packages = [{include = "learning_cognito"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
