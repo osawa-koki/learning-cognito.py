@@ -1,6 +1,5 @@
 """FastAPIのサンプルコード。
 """
-import uvicorn
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -28,13 +27,3 @@ def read_item(item_id: int, q: str = None):
         dict: パスパラメタとクエリパラメタを含む辞書データ。
     """
     return {"item_id": item_id, "q": q}
-
-
-def main():
-    """FastAPIのサーバーを起動する。
-    """
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-
-
-if __name__ == "__main__":
-    main()
