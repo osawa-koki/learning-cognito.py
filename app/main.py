@@ -13,6 +13,7 @@ from .models.resend_code import ResendCodeModel
 from .models.sign_in import SignInModel
 from .models.sign_up import SignUpModel
 from .models.verify_code import VerifyCodeModel
+from .models.forgot_password import ForgotPasswordModel
 
 app = FastAPI()
 
@@ -324,6 +325,41 @@ def change_password(
         )
     except cognito_client.exceptions.NotAuthorizedException:
         content = {"message": "Not authorized."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+
+
+@app.put("/forgot_password")
+def forgot_password(params: ForgotPasswordModel):
+    """パスワードを忘れた場合の処理。
+    """
+    email = params.email
+    try:
+        cognito_client.forgot_password(
+            ClientId=COGNITO_CLIENT_ID,
+            Username=email,
+        )
+        content = {"message": "success."}
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=content,
+        )
+    except cognito_client.exceptions.CodeDeliveryFailureException:
+        content = {"message": "Code delivery failure."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.InvalidParameterException:
+        content = {"message": "Invalid parameter."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.UserNotFoundException:
+        content = {"message": "User not found."}
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=content,

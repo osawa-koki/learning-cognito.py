@@ -70,3 +70,13 @@ Authorization: Bearer <JWTアクセストークン>
   "old_password": "Password1234",
   "new_password": "Password5678"
 }
+
+###
+
+# パスワードを忘れた場合に認証コードを送るAPI。
+PUT http://localhost:8000/forgot_password
+Content-Type: application/json
+
+{
+  "email": "user@example.com"
+}
