@@ -1,8 +1,14 @@
 """FastAPIのサンプルコード。
 """
+from os import environ
+
 from fastapi import FastAPI
 
+from . import initializer
+
 app = FastAPI()
+
+initializer.main()
 
 
 @app.get("/")
@@ -13,6 +19,16 @@ def read_root():
         dict: `Hello World`を含む辞書データ。
     """
     return {"Hello": "World"}
+
+
+@app.get("/envs")
+def read_envs():
+    """環境変数を返す。
+
+    Returns:
+        dict: 環境変数を含む辞書データ。
+    """
+    return environ
 
 
 @app.get("/items/{item_id}")
