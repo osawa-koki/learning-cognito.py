@@ -296,7 +296,10 @@ def sign_out(authorization: Union[str, None] = Header(default=None)):
 
 
 @app.put("/change_password")
-def change_password(params: ChangePasswordModel, authorization: Union[str, None] = Header(default=None)):
+def change_password(
+    params: ChangePasswordModel,
+    authorization: Union[str, None] = Header(default=None)
+):
     """パスワードを変更する。
     """
     previous_password = params.previous_password
