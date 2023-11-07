@@ -76,3 +76,9 @@ def sign_up(params: SignUpModel):
             status_code=status.HTTP_400_BAD_REQUEST,
             content=content,
         )
+    except cognito_client.exceptions.InvalidParameterException:
+        content = {"message": "Invalid parameter."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
