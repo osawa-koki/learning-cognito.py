@@ -224,8 +224,10 @@ def verify_jwt(authorization: Union[str, None] = Header(default=None)):
         response = cognito_client.get_user(
             AccessToken=jwt,
         )
-        name = [attr["Value"] for attr in response["UserAttributes"] if attr["Name"] == "name"][0]
-        email = [attr["Value"] for attr in response["UserAttributes"] if attr["Name"] == "email"][0]
+        name = [attr["Value"]
+                for attr in response["UserAttributes"] if attr["Name"] == "name"][0]
+        email = [attr["Value"] for attr in response["UserAttributes"]
+                 if attr["Name"] == "email"][0]
         content = {
             "message": "success.",
             "user": {
