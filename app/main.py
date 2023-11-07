@@ -1,8 +1,9 @@
 """FastAPIのサンプルコード。
 """
 from os import environ
+from typing import Union
 
-from fastapi import FastAPI, status
+from fastapi import FastAPI, Header, status
 from fastapi.responses import JSONResponse
 
 from . import initializer
@@ -202,6 +203,57 @@ def sign_in(params: SignInModel):
         )
     except cognito_client.exceptions.InvalidPasswordException:
         content = {"message": "Invalid password."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+
+
+@app.get("/verify_jwt")
+def verify_jwt(authorization: Union[str, None] = Header(default=None)):
+    """JWTを検証する。
+    """
+    if (authorization is None) or (len(authorization.split(" ")) != 2):
+        content = {"message": "Invalid header."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    jwt = authorization.split(" ")[1]
+    try:
+        response = cognito_client.get_user(
+            AccessToken=jwt,
+        )
+        name = [attr["Value"]
+                for attr in response["UserAttributes"] if attr["Name"] == "name"][0]
+        email = [attr["Value"] for attr in response["UserAttributes"]
+                 if attr["Name"] == "email"][0]
+        content = {
+            "message": "success.",
+            "user": {
+                "sub": response["Username"],
+                "name": name,
+                "email": email,
+            },
+        }
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=content,
+        )
+    except cognito_client.exceptions.NotAuthorizedException:
+        content = {"message": "Not authorized."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.UserNotFoundException:
+        content = {"message": "User not found."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.InvalidParameterException:
+        content = {"message": "Invalid parameter."}
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=content,
