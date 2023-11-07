@@ -71,7 +71,7 @@ def sign_up(params: SignUpModel):
             status_code=status.HTTP_201_CREATED,
             content=content)
     except cognito_client.exceptions.UsernameExistsException:
-        content={"message": "User already exists."}
+        content = {"message": "User already exists."}
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=content,
