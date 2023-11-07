@@ -43,8 +43,6 @@ Resources:
       ClientName: !Sub ${AWS::StackName}-client-app
       UserPoolId: !Ref MyCognitoUserPool
       GenerateSecret: false
-      ExplicitAuthFlows:
-        - USER_PASSWORD_AUTH
 
 Outputs:
   # ユーザプールのIDを出力
