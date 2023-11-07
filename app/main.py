@@ -76,7 +76,7 @@ def sign_up(params: SignUpModel):
         )
         content = {"message": "success."}
         return JSONResponse(
-            status_code=status.HTTP_201_CREATED,
+            status_code=status.HTTP_200_OK,
             content=content)
     except cognito_client.exceptions.UsernameExistsException:
         content = {"message": "User already exists."}
@@ -437,6 +437,34 @@ def update_attributes(
                     "Value": comment,
                 },
             ],
+        )
+        content = {"message": "success."}
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=content,
+        )
+    except cognito_client.exceptions.NotAuthorizedException:
+        content = {"message": "Not authorized."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+
+
+@app.delete("/withdrawal")
+def withdrawal(authorization: Union[str, None] = Header(default=None)):
+    """ユーザを削除する。
+    """
+    if (authorization is None) or (len(authorization.split(" ")) != 2):
+        content = {"message": "Invalid header."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    jwt = authorization.split(" ")[1]
+    try:
+        cognito_client.delete_user(
+            AccessToken=jwt,
         )
         content = {"message": "success."}
         return JSONResponse(

@@ -103,3 +103,10 @@ Authorization: Bearer <JWTアクセストークン>
 {
   "comment": "Hello World"
 }
+
+###
+
+# 退会するAPI。
+DELETE http://localhost:8000/withdrawal
+Content-Type: application/json
+Authorization: Bearer <JWTアクセストークン>
