@@ -1,0 +1,14 @@
+# `Hello World`を返す意思疎通用のAPI。
+GET http://localhost:8000
+
+###
+
+# サインアップAPI。
+POST http://localhost:8000/sign_up
+Content-Type: application/json
+
+{
+  "name": "your-name",
+  "email": "user@example.com",
+  "password": "Password1234"
+}
