@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
 
 
-class ResendCodeModel(BaseModel):
+class ForgotPasswordModel(BaseModel):
     email: EmailStr
