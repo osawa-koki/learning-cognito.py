@@ -47,7 +47,14 @@ Content-Type: application/json
 
 ###
 
-# 実際に認証トークンを使ってリクエストを送るAPI
+# 実際に認証トークンを使ってリクエストを送るAPI。
 GET http://localhost:8000/verify_jwt
+Content-Type: application/json
+Authorization: Bearer <JWTアクセストークン>
+
+###
+
+# ログアウトするAPI。
+DELETE http://localhost:8000/sign_out
 Content-Type: application/json
 Authorization: Bearer <JWTアクセストークン>
