@@ -8,11 +8,11 @@ from fastapi.responses import JSONResponse
 
 from . import initializer
 from .cognito_client import cognito_client
+from .models.change_password import ChangePasswordModel
 from .models.resend_code import ResendCodeModel
 from .models.sign_in import SignInModel
 from .models.sign_up import SignUpModel
 from .models.verify_code import VerifyCodeModel
-from .models.change_password import ChangePasswordModel
 
 app = FastAPI()
 
