@@ -14,8 +14,8 @@ from .models.forgot_password import ForgotPasswordModel
 from .models.resend_code import ResendCodeModel
 from .models.sign_in import SignInModel
 from .models.sign_up import SignUpModel
-from .models.verify_code import VerifyCodeModel
 from .models.update_attributes import UpdateAttributesModel
+from .models.verify_code import VerifyCodeModel
 
 app = FastAPI()
 
