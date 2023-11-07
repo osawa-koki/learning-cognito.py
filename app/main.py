@@ -7,9 +7,9 @@ from fastapi.responses import JSONResponse
 
 from . import initializer
 from .cognito_client import cognito_client
+from .models.resend_code import ResendCodeModel
 from .models.sign_up import SignUpModel
 from .models.verify_code import VerifyCodeModel
-from .models.resend_code import ResendCodeModel
 
 app = FastAPI()
 
@@ -127,6 +127,7 @@ def verify_code(params: VerifyCodeModel):
             status_code=status.HTTP_400_BAD_REQUEST,
             content=content,
         )
+
 
 @app.post("/resend_code")
 def resend_code(params: ResendCodeModel):
