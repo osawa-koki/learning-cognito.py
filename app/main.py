@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from . import initializer
 from .cognito_client import cognito_client
 from .models.resend_code import ResendCodeModel
+from .models.sign_in import SignInModel
 from .models.sign_up import SignUpModel
 from .models.verify_code import VerifyCodeModel
 
@@ -158,6 +159,58 @@ def resend_code(params: ResendCodeModel):
         )
     except cognito_client.exceptions.UserNotFoundException:
         content = {"message": "User not found."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+
+
+@app.post("/sign_in")
+def sign_in(params: SignInModel):
+    """サインインする。(USER_SRP_AUTHを使用する)
+    """
+    email = params.email
+    password = params.password
+    try:
+        cognito_client.initiate_auth(
+            ClientId=COGNITO_CLIENT_ID,
+            AuthFlow="USER_SRP_AUTH",
+            AuthParameters={
+                "USERNAME": email,
+                "PASSWORD": password,
+            },
+        )
+        content = {"message": "success."}
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=content,
+        )
+    except cognito_client.exceptions.NotAuthorizedException:
+        content = {"message": "Not authorized."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.UserNotFoundException:
+        content = {"message": "User not found."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.UserNotConfirmedException:
+        content = {"message": "User not confirmed."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.InvalidParameterException:
+        content = {"message": "Invalid parameter."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.InvalidPasswordException:
+        content = {"message": "Invalid password."}
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=content,
