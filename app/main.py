@@ -210,27 +210,28 @@ def sign_in(params: SignInModel):
 
 
 @app.get("/verify_jwt")
-def verify_jwt(Authorization: Union[str, None] = Header(default=None)):
+def verify_jwt(authorization: Union[str, None] = Header(default=None)):
+    """JWTを検証する。
     """
-    """
-    if (Authorization is None) or (len(Authorization.split(" ")) != 2):
+    if (authorization is None) or (len(authorization.split(" ")) != 2):
         content = {"message": "Invalid header."}
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=content,
         )
-    jwt = Authorization.split(" ")[1]
+    jwt = authorization.split(" ")[1]
     try:
         response = cognito_client.get_user(
             AccessToken=jwt,
         )
+        name = [attr["Value"] for attr in response["UserAttributes"] if attr["Name"] == "name"][0]
+        email = [attr["Value"] for attr in response["UserAttributes"] if attr["Name"] == "email"][0]
         content = {
             "message": "success.",
             "user": {
                 "sub": response["Username"],
-                "name": [attr["Value"] for attr in response["UserAttributes"] if attr["Name"] == "name"][0],
-                "email": [attr["Value"] for attr in response["UserAttributes"] if attr["Name"] == "email"][0],
-                "email_verified": [attr["Value"] for attr in response["UserAttributes"] if attr["Name"] == "email_verified"][0],
+                "name": name,
+                "email": email,
             },
         }
         return JSONResponse(
