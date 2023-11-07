@@ -92,3 +92,14 @@ Content-Type: application/json
   "code": "123456",
   "password": "Password5678"
 }
+
+###
+
+# ユーザー情報を変更するAPI。
+PUT http://localhost:8000/update_attributes
+Content-Type: application/json
+Authorization: Bearer <JWTアクセストークン>
+
+{
+  "comment": "Hello World"
+}

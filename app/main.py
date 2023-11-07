@@ -14,6 +14,7 @@ from .models.forgot_password import ForgotPasswordModel
 from .models.resend_code import ResendCodeModel
 from .models.sign_in import SignInModel
 from .models.sign_up import SignUpModel
+from .models.update_attributes import UpdateAttributesModel
 from .models.verify_code import VerifyCodeModel
 
 app = FastAPI()
@@ -406,6 +407,44 @@ def confirm_forgot_password(params: ConfirmForgotPasswordModel):
         )
     except cognito_client.exceptions.UserNotFoundException:
         content = {"message": "User not found."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+
+
+@app.put("/update_attributes")
+def update_attributes(
+    params: UpdateAttributesModel,
+    authorization: Union[str, None] = Header(default=None)
+):
+    """ユーザ属性を更新する。
+    """
+    comment = params.comment
+    if (authorization is None) or (len(authorization.split(" ")) != 2):
+        content = {"message": "Invalid header."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    jwt = authorization.split(" ")[1]
+    try:
+        cognito_client.update_user_attributes(
+            AccessToken=jwt,
+            UserAttributes=[
+                {
+                    "Name": "custom:comment",
+                    "Value": comment,
+                },
+            ],
+        )
+        content = {"message": "success."}
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=content,
+        )
+    except cognito_client.exceptions.NotAuthorizedException:
+        content = {"message": "Not authorized."}
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=content,
