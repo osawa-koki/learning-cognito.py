@@ -3,7 +3,7 @@
 from os import environ
 from typing import Union
 
-from fastapi import FastAPI, status, Header
+from fastapi import FastAPI, Header, status
 from fastapi.responses import JSONResponse
 
 from . import initializer
