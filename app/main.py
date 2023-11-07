@@ -7,6 +7,7 @@ from fastapi.responses import JSONResponse
 
 from . import initializer
 from .cognito_client import cognito_client
+from .models.resend_code import ResendCodeModel
 from .models.sign_up import SignUpModel
 from .models.verify_code import VerifyCodeModel
 
@@ -116,6 +117,41 @@ def verify_code(params: VerifyCodeModel):
         )
     except cognito_client.exceptions.NotAuthorizedException:
         content = {"message": "Not authorized."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.UserNotFoundException:
+        content = {"message": "User not found."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+
+
+@app.post("/resend_code")
+def resend_code(params: ResendCodeModel):
+    """サインアップ時に送信されたコードを再送する。
+    """
+    email = params.email
+    try:
+        cognito_client.resend_confirmation_code(
+            ClientId=COGNITO_CLIENT_ID,
+            Username=email,
+        )
+        content = {"message": "success."}
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=content,
+        )
+    except cognito_client.exceptions.CodeDeliveryFailureException:
+        content = {"message": "Code delivery failure."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.InvalidParameterException:
+        content = {"message": "Invalid parameter."}
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=content,

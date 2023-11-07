@@ -9,7 +9,7 @@ Content-Type: application/json
 
 {
   "name": "your-name",
-  "email": "user@example.com",
+  "email": "koki@osawa.cloud",
   "password": "Password1234"
 }
 
@@ -27,9 +27,9 @@ Content-Type: application/json
 ###
 
 # 認証コードを再送するAPI
-POST http://localhost:3000/resend_code
+POST http://localhost:8000/resend_code
 Content-Type: application/json
 
 {
-  "email": "user@example.com"
+  "email": "koki@osawa.cloud"
 }
