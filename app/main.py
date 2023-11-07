@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from . import initializer
 from .cognito_client import cognito_client
 from .models.sign_up import SignUpModel
+from .models.verify_code import VerifyCodeModel
 
 app = FastAPI()
 
@@ -78,6 +79,49 @@ def sign_up(params: SignUpModel):
         )
     except cognito_client.exceptions.InvalidParameterException:
         content = {"message": "Invalid parameter."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+
+
+@app.post("/verify_code")
+def verify_code(params: VerifyCodeModel):
+    """サインアップ時に送信されたコードを検証する。
+    """
+    email = params.email
+    code = params.code
+    try:
+        cognito_client.confirm_sign_up(
+            ClientId=COGNITO_CLIENT_ID,
+            Username=email,
+            ConfirmationCode=code,
+        )
+        content = {"message": "success."}
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=content,
+        )
+    except cognito_client.exceptions.CodeMismatchException:
+        content = {"message": "Invalid code."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.ExpiredCodeException:
+        content = {"message": "Expired code."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.NotAuthorizedException:
+        content = {"message": "Not authorized."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.UserNotFoundException:
+        content = {"message": "User not found."}
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=content,

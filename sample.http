@@ -12,3 +12,14 @@ Content-Type: application/json
   "email": "user@example.com",
   "password": "Password1234"
 }
+
+###
+
+# 認証コードを検証するAPI。
+POST http://localhost:8000/verify_code
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "code": "123456"
+}
