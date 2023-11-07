@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 from . import initializer
 from .cognito_client import cognito_client
 from .models.change_password import ChangePasswordModel
+from .models.confirm_forgot_password import ConfirmForgotPasswordModel
 from .models.forgot_password import ForgotPasswordModel
 from .models.resend_code import ResendCodeModel
 from .models.sign_in import SignInModel
@@ -354,6 +355,51 @@ def forgot_password(params: ForgotPasswordModel):
         )
     except cognito_client.exceptions.InvalidParameterException:
         content = {"message": "Invalid parameter."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.UserNotFoundException:
+        content = {"message": "User not found."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+
+
+@app.put("/confirm_forgot_password")
+def confirm_forgot_password(params: ConfirmForgotPasswordModel):
+    """パスワードを忘れた場合の処理。
+    """
+    email = params.email
+    code = params.code
+    password = params.password
+    try:
+        cognito_client.confirm_forgot_password(
+            ClientId=COGNITO_CLIENT_ID,
+            Username=email,
+            ConfirmationCode=code,
+            Password=password,
+        )
+        content = {"message": "success."}
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=content,
+        )
+    except cognito_client.exceptions.CodeMismatchException:
+        content = {"message": "Invalid code."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.ExpiredCodeException:
+        content = {"message": "Expired code."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    except cognito_client.exceptions.NotAuthorizedException:
+        content = {"message": "Not authorized."}
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=content,

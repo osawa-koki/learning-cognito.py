@@ -80,3 +80,15 @@ Content-Type: application/json
 {
   "email": "user@example.com"
 }
+
+###
+
+# パスワードを忘れた場合に認証コードを検証するAPI。
+PUT http://localhost:8000/confirm_forgot_password
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "code": "123456",
+  "password": "Password5678"
+}
