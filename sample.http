@@ -44,3 +44,10 @@ Content-Type: application/json
   "email": "user@example.com",
   "password": "Password1234"
 }
+
+###
+
+# 実際に認証トークンを使ってリクエストを送るAPI
+GET http://localhost:8000/verify_jwt
+Content-Type: application/json
+Authorization: Bearer <JWTアクセストークン>
