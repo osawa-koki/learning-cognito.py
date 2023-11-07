@@ -12,6 +12,7 @@ from .models.resend_code import ResendCodeModel
 from .models.sign_in import SignInModel
 from .models.sign_up import SignUpModel
 from .models.verify_code import VerifyCodeModel
+from .models.change_password import ChangePasswordModel
 
 app = FastAPI()
 
@@ -207,6 +208,12 @@ def sign_in(params: SignInModel):
             status_code=status.HTTP_400_BAD_REQUEST,
             content=content,
         )
+    except cognito_client.exceptions.NotAuthorizedException:
+        content = {"message": "Not authorized."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
 
 
 @app.get("/verify_jwt")
@@ -274,6 +281,38 @@ def sign_out(authorization: Union[str, None] = Header(default=None)):
     try:
         cognito_client.global_sign_out(
             AccessToken=jwt,
+        )
+        content = {"message": "success."}
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=content,
+        )
+    except cognito_client.exceptions.NotAuthorizedException:
+        content = {"message": "Not authorized."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+
+
+@app.put("/change_password")
+def change_password(params: ChangePasswordModel, authorization: Union[str, None] = Header(default=None)):
+    """パスワードを変更する。
+    """
+    previous_password = params.previous_password
+    proposed_password = params.proposed_password
+    if (authorization is None) or (len(authorization.split(" ")) != 2):
+        content = {"message": "Invalid header."}
+        return JSONResponse(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            content=content,
+        )
+    jwt = authorization.split(" ")[1]
+    try:
+        cognito_client.change_password(
+            AccessToken=jwt,
+            PreviousPassword=previous_password,
+            ProposedPassword=proposed_password,
         )
         content = {"message": "success."}
         return JSONResponse(
