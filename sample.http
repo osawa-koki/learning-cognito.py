@@ -58,3 +58,15 @@ Authorization: Bearer <JWTアクセストークン>
 DELETE http://localhost:8000/sign_out
 Content-Type: application/json
 Authorization: Bearer <JWTアクセストークン>
+
+###
+
+# パスワードを変更するAPI。
+PUT http://localhost:8000/change_password
+Content-Type: application/json
+Authorization: Bearer <JWTアクセストークン>
+
+{
+  "old_password": "Password1234",
+  "new_password": "Password5678"
+}
